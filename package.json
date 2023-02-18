@@ -1,0 +1,16 @@
+{
+  "name": "chatbasico",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Sistema para troca de mensagens.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.7"
+  }
+}
