@@ -4,16 +4,15 @@ const router = express.Router();
 
 // Home
 router.get('/', (req, res) => {
-    res.render('index', {layout: 'mainHome'})
+    return res.render('index', {layout: 'mainHome'})
 })
 router.post('/', (req, res) => {
-    return
+    return res.redirect('/chat')
 })
-
 
 // Chat
 router.get('/chat', (req, res) => {
-    return
+    return res.render('chat', {layout: 'mainChat'})
 })
 
 export default router
