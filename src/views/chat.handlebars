@@ -1,29 +1,62 @@
-
 <div class="container">
-    
-    <div class="container">
 
-        <div class="row">
-            
-            {{!-- Lista de usuários --}}
-            <div class="col-md-6 mt-3 px-0 py-0 border border-dark">
-                
-                <h3 class="text-center mb-0 titulo">Usuários on-line</h3>
-                <ul id="listaUSuarios"></ul>
+    {{!-- Para guardar o apelido do usuário que acabou de entrar e passar no evento de emissão --}}
+    <input type="hidden" id="apelido" value="{{apelido}}">
 
+    <h3 class="text-center mt-4 titulo">Bate-papo</h3>
 
-            </div>
-            
-            {{!-- Lista de mensagens --}}
-            <div class="col-md-6 mt-3 px-0 py-0 border border-dark">
-
-                <h3 class="text-center mb-0 titulo">Mensagens</h3>
-                <ul id="listaMensagens"></ul>
-
-            </div>
-
+    <h4 class="text-center">Sala</h4>
+    <div class="container-fluid">
+        <div class="row" id="usuarios"> 
+            {{!-- Aqui serão exibidos os participantes do bate-papo --}}
         </div>
+    </div>
 
+    <h5>Conversa</h5>
+    <div class="container-fluid">
+        {{!-- Input + Botão --}}
+        <div class="container-fluid px-0">
+            <div class="row px-0">
+                <div class="col-sm-10 mt-2 px-0">
+                    <input type="text" id="input-mensagem" maxlength="100" class="input-mensagem">
+                </div>
+                <div class="col-sm-2 mt-2 px-0">
+                    <button class="btn-enviar">Enviar</button>
+                </div>
+            </div>
+            
+        </div>
     </div>
 
 </div>
+
+
+<script>
+
+    var usuarios = document.getElementById('usuarios')
+    var apelido = document.getElementById('apelido').value
+
+    socket.emit('novo-usuario', apelido)
+    apelido = ""
+
+    socket.on('incluir-usuario', (lista) => {
+
+        usuarios.innerHTML = ""
+
+        for (i=0; i<lista.length; i++) {
+            
+            var divColuna = document.createElement('div');
+            var classesDivColuna = divColuna.classList;
+            classesDivColuna.add('col-sm-6', 'col-md-4', 'mt-2', 'text-center', 'divColuna')
+
+            divColuna.textContent = lista[i].nome
+            usuarios.appendChild(divColuna);
+        }
+
+        /*
+        window.scrollTo(0, document.body.scrollHeight);
+        */
+
+    })
+
+</script>
