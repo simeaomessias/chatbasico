@@ -1,14 +1,14 @@
-<div class="border border-dark">
+<div class="border border-dark caixaEntradaNome">
 
     <div class="container-fluid titulo">
         <h3 class="text-center">Bate-papo</h3>
     </div>
 
-    <form action="/" method="post" id="formAcesso" autocomplete="off" class="container-fluid px-0 d-flex flex-column">
+    <form action="/" method="post" id="form-acesso" autocomplete="off" class="container-fluid px-0 d-flex flex-column">
 
         <div class="d-flex flex-column px-2 mt-1">
-            <label for="apelido" style="font-size: 20px;">Digite um apelido e entre na sala</label>
-            <input type="text" name="apelido" id="apelido" class="mt-2 px-2 py-2 input-apelido" autofocus autocomplete="off">
+            <label for="nome" style="font-size: 20px;">Nome de usuario para a sala</label>
+            <input type="text" name="usuario" id="input-usuario" class="mt-2 px-2 py-2 input-usuario" autofocus autocomplete="off">
             <div style="width: 100%; text-align: center; color: red">{{erro}}</div>
         </div>
 
@@ -21,13 +21,16 @@
 </div>
 
 <script>
-    var form = document.getElementById('formAcesso')
-    var apelido = document.getElementById('apelido')
+
+    var form = document.getElementById('form-acesso')
+    var usuario = document.getElementById('input-usuario')
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        if (apelido.value) {
+        if (usuario.value) {
             form.submit()    
         }
+        usuario.value = ""
     })
+
 </script>

@@ -9,11 +9,35 @@ app.use(express.static('public'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// Dotenv (loads environment variables)
+import dotenv from 'dotenv'
+dotenv.config()
+
 // Express-handlebars
 import { engine } from 'express-handlebars';
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './src/views');
+
+// Express-session
+import session from 'express-session'
+app.use(session({
+    secret: 'qualquerCoisa',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000*60*2, // 2 minutos (tempo máximo de inatividade no chat)
+        httpOnly: true
+    }
+}))
+
+// Connect-flash
+import flash from 'connect-flash'
+app.use(flash())
+
+// Middlewares
+import middleware from './src/middlewares/middleware.js'
+app.use(middleware.global)
 
 // Routes
 import routes from './src/routes/routes.js'
@@ -34,37 +58,22 @@ io.on('connection', (socket) => {
 
     console.log(`Usuário conectado: ${socket.id}`)
 
-    // Recebimento de novo apelido e distribuição para os sockets
-    socket.on('novo-usuario', (txt) => {
-
-        if (txt && typeof txt !== undefined && txt !== null) {
-
-            // Verificação se o apelido já existe na sala
-            let achou = false
-            for (let i=0; i<listaUsuarios.length; i++) {
-                if (listaUsuarios[i].nome === txt) {
-                    achou = true
-                    console.log("O apelido já existe!")
-                }
-            }
-
-            if (!achou) {
-                const usuario = {
-                    nome: txt,
-                    id: socket.id
-                }
-                listaUsuarios.push(usuario)
-                listaUsuarios.sort( function(a,b) {
-                    return a.nome < b.nome ? -1 : a.nome > b.nome ? 1 : 0;
-                });
-            }
-        }
-        io.emit('incluir-usuario', listaUsuarios)
+    // Recebimento de novo usuario e distribuição para os sockets
+    socket.on('novo-usuario', (novoUsuario) => {
+        io.emit('usuario-entrou', novoUsuario)
+        io.emit('atualiza-usuarios', listaUsuarios)
     })
 
+    // Recebimento de nova mensagem e distribuição para os sockets
+    socket.on('nova-mensagem', (usuario, novaMensagem) => {
+        io.emit('incluir-mensagem', usuario, novaMensagem)
+    })
+
+    /*
     socket.on('disconnect', () => {
         console.log(`Usuário desconectado: ${socket.id}`)
     })
+    */
 
 })
 

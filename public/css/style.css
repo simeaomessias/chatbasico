@@ -5,6 +5,8 @@
 :root {
     --branco: rgb(255,255,255);
     --preto: rgb(0,0,0);
+    --cinza-claro: rgb(230, 230, 230);
+    --khaki: rgb(240, 230, 140);
     --azul-claro: rgb(135,206,250);
     --verde-claro: rgb(119,221,119);
 }
@@ -32,11 +34,15 @@
     background-color: var(--branco);
 }
 
+.caixaEntradaNome {
+    min-width: 300px;
+}
+
 .titulo {
     background-color: var(--azul-claro);
 }
 
-.input-apelido {
+.input-usuario {
     outline: none;
     width: 100%;
     height: 40px;
@@ -55,17 +61,52 @@
     font-weight: bold;
 }
 
-.divColuna {
-    background-color: khaki;
-    border-left: 5px solid black;
+.div-usuarios {
+    border: 1px solid black;
+    border-top: 0px;
+    border-bottom: 0px;
+    width: 100%;
+}
+
+.div-mensagens {
+    /* background-color: var(--cinza-claro); */
+    border: 1px solid black;
+    border-top: 0px;
+    border-bottom: 0px;
+    height: 300px;
+    width: 100%;
+    padding: 10px;
+    margin: 0px;
+    overflow: scroll;
+}
+
+.padrao-vaga-ocupada {
+    background-color: var(--verde-claro);
+    padding: 0px;
+    text-align: center;
+}
+
+.padrao-vaga-livre {
+    background-color: var(--azul-claro);
+    padding: 0px;
+    text-align: center;
+}
+
+.padrao-msg-enviada {
+    width: 100%;
+    text-align: right;
 }
 
 .input-mensagem {
+    border: 1px solid black;
     outline: none;
     width: 100%;
     height: 36px;
     font-size: 16px;
+    padding-left: 8px;
 }
+
+
 
 .btn-enviar {
     background-color: var(--verde-claro);

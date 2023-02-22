@@ -1,31 +1,37 @@
 <div class="container">
 
-    {{!-- Para guardar o apelido do usuário que acabou de entrar e passar no evento de emissão --}}
-    <input type="hidden" id="apelido" value="{{apelido}}">
+    <input type="hidden" name="usuario" id="input-usuario" value="{{usuario}}">
+    <input type="hidden" name="usuarioNovo" id="input-usuarioNovo" value="{{usuarioNovo}}">
 
-    <h3 class="text-center mt-4 titulo">Bate-papo</h3>
-
-    <h4 class="text-center">Sala</h4>
-    <div class="container-fluid">
-        <div class="row" id="usuarios"> 
+    <h3 class="text-center mt-4 py-0 mb-0 border border-dark titulo">USUÁRIOS</h3>
+    <div class="container-fluid mb-0 border border-dark">
+        <div class="row py-0" id="div-usuarios"> 
             {{!-- Aqui serão exibidos os participantes do bate-papo --}}
         </div>
     </div>
 
-    <h5>Conversa</h5>
-    <div class="container-fluid">
+    <h3 class="text-center mb-0 border border-dark titulo">CONVERSAS</h3>
+    <div class="container-fluid px-0 py-0 mt-0">
+
+        {{!-- Área de mensagens --}}
+        <div id="div-mensagens" class="div-mensagens">
+            {{!-- Aqui serão exibidas os mensagens dos participantes --}}
+        </div>
+
         {{!-- Input + Botão --}}
-        <div class="container-fluid px-0">
-            <div class="row px-0">
-                <div class="col-sm-10 mt-2 px-0">
-                    <input type="text" id="input-mensagem" maxlength="100" class="input-mensagem">
-                </div>
-                <div class="col-sm-2 mt-2 px-0">
-                    <button class="btn-enviar">Enviar</button>
+        <form action="" method="POST" id="form-mensagem" autocomplete="off" class="container-fluid px-0 d-flex flex-column">
+            <div class="container-fluid">
+                <div class="row px-0 py-0">
+                    <div class="col-sm-10 px-0">
+                        <input type="text" id="input-novaMensagem" maxlength="100" class="input-mensagem">
+                    </div>
+                    <div class="col-sm-2 px-0">
+                        <input type="submit" id="" class="btn-enviar" value="Enviar">
+                    </div>
                 </div>
             </div>
-            
-        </div>
+        </form>
+
     </div>
 
 </div>
@@ -33,30 +39,73 @@
 
 <script>
 
-    var usuarios = document.getElementById('usuarios')
-    var apelido = document.getElementById('apelido').value
+    var usuario = document.getElementById('input-usuario').value
+    var usuarioNovo = document.getElementById('input-usuarioNovo').value
 
-    socket.emit('novo-usuario', apelido)
-    apelido = ""
+    var usuarios = document.getElementById('div-usuarios')
+    var mensagens = document.getElementById('div-mensagens')
+    var form = document.getElementById('form-mensagem')
 
-    socket.on('incluir-usuario', (lista) => {
+    // Emissão de nome do novo usuário para o servidor
+    if (usuarioNovo === "true") {
+        socket.emit('novo-usuario', usuario)
+    }
 
-        usuarios.innerHTML = ""
+    // Recebimento de entrada de novo usuário do servidor
+    socket.on('usuario-entrou', (txt) => {
+        var novoItem = document.createElement('div')
+        novoItem.innerHTML = `<b>${txt}</b> entrou na sala.`
+        mensagens.appendChild(novoItem)
+    })
 
-        for (i=0; i<lista.length; i++) {
+    // Recebimento de lista de usuários para atualização na página
+    socket.on('atualiza-usuarios', (lista) => {
+        for (let i=0; i<10; i++) {
+            var novoUsuario = document.createElement('div')
+            if (i) {
+
+            }
+            if (lista[i].usuario) {
+                novoUsuario.classList.add('col-md-4', 'padrao-vaga-ocupada')
+                novoUsuario.innerHTML = `${lista[i].usuario}`
+            } else {
+                novoUsuario.classList.add('col-md-4', 'padrao-vaga-livre')
+                novoUsuario.innerHTML = `LIVRE`
+            }
             
-            var divColuna = document.createElement('div');
-            var classesDivColuna = divColuna.classList;
-            classesDivColuna.add('col-sm-6', 'col-md-4', 'mt-2', 'text-center', 'divColuna')
-
-            divColuna.textContent = lista[i].nome
-            usuarios.appendChild(divColuna);
+            
         }
+        usuarios.appendChild(novoUsuario)
+
+    })
+
+    // Emissão de nova mensagem para o servidor
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        var novaMensagem = document.getElementById('input-novaMensagem')
+        if (novaMensagem.value) {
+            socket.emit('nova-mensagem', usuario, novaMensagem.value)
+        }
+        novaMensagem.value = ""
+        novaMensagem.focus()
+    })
+
+    // Recebimento de nova mensagem do servidor
+    socket.on('incluir-mensagem', (remetente, conteudo) => {
+        var novoItem = document.createElement('div')
+        if (remetente === usuario) {    
+            novoItem.classList.add('padrao-msg-enviada')
+            novoItem.innerHTML = `${conteudo.trim()}`
+        } else {
+            novoItem.innerHTML = `<b>${remetente}</b> ${conteudo}`
+        }
+        mensagens.appendChild(novoItem)
+    })
+
+
 
         /*
         window.scrollTo(0, document.body.scrollHeight);
         */
-
-    })
 
 </script>

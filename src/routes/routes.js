@@ -2,22 +2,15 @@
 import express from 'express'
 const router = express.Router();
 
-// Home
-router.get('/', (req, res) => {
-    return res.render('index', {layout: 'mainHome'})
-})
+// Controllers
+import homeController from '../controllers/homeController.js'
+import chatController from '../controllers/chatController.js'
 
-router.post('/', (req, res) => {
-    if (listaUsuarios.length < capacidadeSala) {
-        return res.render('chat', {layout: 'mainChat', apelido: req.body.apelido.trim()})
-    }
-    return res.render('index', {layout: 'mainHome', erro: "A sala está lotada (6 integrantes)"})
-    
-})
+// Home - Tela inicial + Verificação de sala
+router.get('/', homeController.index)
+router.post('/', homeController.verificarSala)
 
 // Chat
-router.get('/chat', (req, res) => {
-
-})
+router.get('/chat', chatController.index)
 
 export default router
