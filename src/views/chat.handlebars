@@ -2,38 +2,40 @@
 
     <input type="hidden" name="usuario" id="input-usuario" value="{{usuario}}">
     <input type="hidden" name="usuarioNovo" id="input-usuarioNovo" value="{{usuarioNovo}}">
+    <input type="hidden" name="capacidadeSala" id="input-capacidadeSala" value="{{capacidadeSala}}">
 
-    <h3 class="text-center mt-4 py-0 mb-0 border border-dark titulo">USUÁRIOS</h3>
-    <div class="container-fluid mb-0 border border-dark">
-        <div class="row py-0" id="div-usuarios"> 
-            {{!-- Aqui serão exibidos os participantes do bate-papo --}}
-        </div>
-    </div>
-
-    <h3 class="text-center mb-0 border border-dark titulo">CONVERSAS</h3>
-    <div class="container-fluid px-0 py-0 mt-0">
-
-        {{!-- Área de mensagens --}}
-        <div id="div-mensagens" class="div-mensagens">
-            {{!-- Aqui serão exibidas os mensagens dos participantes --}}
+    {{#if usuarioNovo}}
+        <h4 class="text-center mt-4 py-0 mb-0 border border-dark titulo">USUÁRIOS</h4>
+        <div class="container-fluid mb-0 border border-dark">
+            <div class="row py-0 px-0 div-usuarios" id="div-usuarios"> 
+                {{!-- Aqui serão exibidos os participantes do bate-papo --}}
+            </div>
         </div>
 
-        {{!-- Input + Botão --}}
-        <form action="" method="POST" id="form-mensagem" autocomplete="off" class="container-fluid px-0 d-flex flex-column">
-            <div class="container-fluid">
-                <div class="row px-0 py-0">
-                    <div class="col-sm-10 px-0">
-                        <input type="text" id="input-novaMensagem" maxlength="100" class="input-mensagem">
-                    </div>
-                    <div class="col-sm-2 px-0">
-                        <input type="submit" id="" class="btn-enviar" value="Enviar">
+        <h4 class="text-center mb-0 border border-dark titulo">CONVERSAS</h4>
+        <div class="container-fluid px-0 py-0 mt-0">
+
+            {{!-- Área de mensagens --}}
+            <div id="div-mensagens" class="div-mensagens">
+                {{!-- Aqui serão exibidas os mensagens dos participantes --}}
+            </div>
+
+            {{!-- Input + Botão --}}
+            <form action="" method="POST" id="form-mensagem" autocomplete="off" class="container-fluid px-0 d-flex flex-column">
+                <div class="container-fluid">
+                    <div class="row px-0 py-0">
+                        <div class="col-sm-10 px-0">
+                            <input type="text" id="input-novaMensagem" maxlength="100" class="input-mensagem">
+                        </div>
+                        <div class="col-sm-2 px-0">
+                            <input type="submit" id="" class="btn-enviar" value="Enviar">
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
 
-    </div>
-
+        </div>
+    {{/if}}
 </div>
 
 
@@ -41,6 +43,11 @@
 
     var usuario = document.getElementById('input-usuario').value
     var usuarioNovo = document.getElementById('input-usuarioNovo').value
+    var capacidadeSala = document.getElementById('input-capacidadeSala').value
+
+    if (usuario === "") {
+        alert('Sua sessão expirou por inatividade! Entre de novo!')
+    }
 
     var usuarios = document.getElementById('div-usuarios')
     var mensagens = document.getElementById('div-mensagens')
@@ -60,23 +67,12 @@
 
     // Recebimento de lista de usuários para atualização na página
     socket.on('atualiza-usuarios', (lista) => {
-        for (let i=0; i<10; i++) {
+        usuarios.innerHTML = ""
+        for (let i=0; i<lista.length; i++) {
             var novoUsuario = document.createElement('div')
-            if (i) {
-
-            }
-            if (lista[i].usuario) {
-                novoUsuario.classList.add('col-md-4', 'padrao-vaga-ocupada')
-                novoUsuario.innerHTML = `${lista[i].usuario}`
-            } else {
-                novoUsuario.classList.add('col-md-4', 'padrao-vaga-livre')
-                novoUsuario.innerHTML = `LIVRE`
-            }
-            
-            
+            novoUsuario.innerHTML = `${lista[i].usuario}`
+            usuarios.appendChild(novoUsuario)
         }
-        usuarios.appendChild(novoUsuario)
-
     })
 
     // Emissão de nova mensagem para o servidor
@@ -102,10 +98,8 @@
         mensagens.appendChild(novoItem)
     })
 
-
-
-        /*
-        window.scrollTo(0, document.body.scrollHeight);
-        */
+    /*
+    window.scrollTo(0, document.body.scrollHeight);
+    */
 
 </script>

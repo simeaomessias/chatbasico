@@ -62,10 +62,11 @@
 }
 
 .div-usuarios {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     border-top: 0px;
     border-bottom: 0px;
     width: 100%;
+    height: 100px;
 }
 
 .div-mensagens {
@@ -75,21 +76,9 @@
     border-bottom: 0px;
     height: 300px;
     width: 100%;
-    padding: 10px;
+    /* padding: 10px; */
     margin: 0px;
     overflow: scroll;
-}
-
-.padrao-vaga-ocupada {
-    background-color: var(--verde-claro);
-    padding: 0px;
-    text-align: center;
-}
-
-.padrao-vaga-livre {
-    background-color: var(--azul-claro);
-    padding: 0px;
-    text-align: center;
 }
 
 .padrao-msg-enviada {

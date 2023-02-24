@@ -1,9 +1,13 @@
+import session from 'express-session'
 
-const index = (req, res) => {
+
+const index = async (req, res) => {
+
     res.render('chat', {
         layout: 'mainChat',
         usuario: req.session.usuario,
-        usuarioNovo: req.session.usuarioNovo
+        usuarioNovo: req.session.usuarioNovo,
+        capacidadeSala: req.session.capacidadeSala
     })
 }
 

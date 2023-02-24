@@ -1,8 +1,28 @@
+// Sessão (MongoDB)
+import session from 'express-session'
+import mongoose from 'mongoose';
 
-const index = (req, res) => {
+import SessionSchema from '../models/Session.js'
+const Session = mongoose.model('sessions', SessionSchema, 'sessions');
+
+// Home - Tela inicial
+const index = async (req, res) => {
+
+    // Verificação do número de sessões ativas (com usuário já cadastrado)
+    let listaSessoes = await Session.find().lean()
+    let totSessoesAtivas = 0
+    listaSessoes.forEach( (item) => {
+        let sessionJSON = JSON.parse(item.session)
+        if (sessionJSON.usuario) {
+            totSessoesAtivas++
+        }
+    })
+    console.log(`Sessões ativasA; ${totSessoesAtivas}`)
+
+
     // Verificaçao se existe sessão ativa
     if (req.session.usuario) {
-        req.flash('msgSucesso', "Você já está na sala de bate-papo")
+        req.flash('msgSucesso', "Você já está na sala de bate-papo. Volte para a aba de conversas. Se fechou, aguarde 2 minutos de inatividade para poder entrar de novo.")
         req.session.usuarioNovo = false
         req.session.save( () => {
             return res.redirect('/chat')
@@ -12,11 +32,13 @@ const index = (req, res) => {
     return res.render('index', {layout: 'mainHome'})
 }
 
-const verificarSala = (req, res) => {
+// Home - Verifica de sala
+const verificarSala = async (req, res) => {
 
     // Inicialização do usuário na sessão
     req.session.usuario = null
     req.session.usuarioNovo = false
+    req.session.capacidadeSala = capacidadeSala
 
     // Verificação se a sala está cheia
     // Número de usuários e sessões não expiradas
