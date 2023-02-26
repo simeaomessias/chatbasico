@@ -90,7 +90,7 @@ import routes from './src/routes/routes.js'
 app.use(routes)
 
 // Inicializações
-global.capacidadeSala = 2
+global.capacidadeSala = 5
 
 // Servidor
 const PORT = process.env.PORT || 8081
