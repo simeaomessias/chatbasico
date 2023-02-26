@@ -8,41 +8,33 @@ const Session = mongoose.model('sessions', SessionSchema, 'sessions');
 // Home - Tela inicial
 const index = async (req, res) => {
 
-    // Verificação do número de sessões ativas (com usuário já cadastrado)
-    let listaSessoes = await Session.find().lean()
-    let totSessoesAtivas = 0
-    listaSessoes.forEach( (item) => {
-        let sessionJSON = JSON.parse(item.session)
-        if (sessionJSON.usuario) {
-            totSessoesAtivas++
-        }
-    })
-    console.log(`Sessões ativasA; ${totSessoesAtivas}`)
-
-
-    // Verificaçao se existe sessão ativa
+    // Redirecionamento para o bate-papo se já existir sessão ativa para o usuário atual
     if (req.session.usuario) {
-        req.flash('msgSucesso', "Você já está na sala de bate-papo. Volte para a aba de conversas. Se fechou, aguarde 2 minutos de inatividade para poder entrar de novo.")
-        req.session.usuarioNovo = false
         req.session.save( () => {
             return res.redirect('/chat')
         })
         return
     }
+    // Tela para entrada do nome de usuário
     return res.render('index', {layout: 'mainHome'})
 }
 
 // Home - Verifica de sala
 const verificarSala = async (req, res) => {
 
-    // Inicialização do usuário na sessão
-    req.session.usuario = null
-    req.session.usuarioNovo = false
-    req.session.capacidadeSala = capacidadeSala
-
-    // Verificação se a sala está cheia
-    // Número de usuários e sessões não expiradas
-    const salaCheia = listaUsuarios.length >= capacidadeSala
+    // Sessões com usuários cadastrados
+    let listaSessoes = await Session.find().lean()
+    let listaUsuarios = []
+    let totSessoesAtivas = 0
+    listaSessoes.forEach( (sessao) => {
+        let sessaoJSON = JSON.parse(sessao.session)
+        if (sessaoJSON.usuario) {
+            totSessoesAtivas++
+            listaUsuarios.push(sessaoJSON.usuario.toLowerCase().trim())
+        }
+    })
+    // Verificação da lotação atual da sala
+    const salaCheia = totSessoesAtivas >= capacidadeSala
     if (salaCheia) {
         req.flash('msgErro', "Sala lotada!")
         req.session.save( () => {
@@ -50,15 +42,8 @@ const verificarSala = async (req, res) => {
         })
         return
     }
-
     // Verificação da disponibilidade do nome de usuário
-    let usuarioIndisponivel = false
-    for (let i=0; i<listaUsuarios.length; i++) {
-        if (listaUsuarios[i].usuario === req.body.usuario) {
-            usuarioIndisponivel = true
-            break
-        }
-    }
+    let usuarioIndisponivel = listaUsuarios.includes(req.body.usuario.toLowerCase())
     if (usuarioIndisponivel) {
         req.flash('msgErro', "Nome de usuário indisponível.")
         req.session.save( () => {
@@ -66,23 +51,12 @@ const verificarSala = async (req, res) => {
         })
         return
     }
-
-    // Usuario passou das verificações
-    // Atualização da lista de usuários e da sessão criada para ele
-    listaUsuarios.push({
-     usuario: req.body.usuario,
-     idSessao: req.session.id
-    })
-    listaUsuarios.sort( function(a,b) {
-        return a.usuario < b.usuario ? -1 : a.usuario > b.usuario ? 1 : 0;
-    });
-
-    req.session.usuario = req.body.usuario
-    req.session.usuarioNovo = true
+    // Verificações concluídas
+    req.session.usuario = req.body.usuario.toLowerCase()
+    req.session.primeiroAcesso = req.body.primeiroAcesso = "1" // 1 - Sim 0 - Não
     req.session.save( () => {
         res.redirect('/chat')
     })
-    
 }
 
 export default {

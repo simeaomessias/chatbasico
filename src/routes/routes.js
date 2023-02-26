@@ -12,5 +12,6 @@ router.post('/', homeController.verificarSala)
 
 // Chat
 router.get('/chat', chatController.index)
+router.get('/sair', chatController.sairSala)
 
 export default router

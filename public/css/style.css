@@ -5,10 +5,13 @@
 :root {
     --branco: rgb(255,255,255);
     --preto: rgb(0,0,0);
+    --amarelo: rgb(255,255,0);
     --cinza-claro: rgb(230, 230, 230);
     --khaki: rgb(240, 230, 140);
+    --azul: rgb(0,0,255);
     --azul-claro: rgb(135,206,250);
     --verde-claro: rgb(119,221,119);
+    --vermelho: rgb(255,0,0);
 }
 
 /* Reset */
@@ -57,7 +60,16 @@
     font-size: 20px;
 }
 
-.btn-entrar:hover {
+.btn-sair {
+    background-color: var(--amarelo);
+    border: 1px solid black;
+    border-left: none;
+    height: 100%;
+    width: 100%;
+    font-size: 20px;
+}
+
+.btn-entrar:hover, .btn-sair:hover {
     font-weight: bold;
 }
 
@@ -81,8 +93,13 @@
     overflow: scroll;
 }
 
-.padrao-msg-enviada {
-    width: 100%;
+.div-usuario-entrou {
+    color: var(--azul);
+}
+.div-usuario-saiu {
+    color: var(--vermelho);
+}
+.div-mensagem-enviada {
     text-align: right;
 }
 
@@ -94,8 +111,6 @@
     font-size: 16px;
     padding-left: 8px;
 }
-
-
 
 .btn-enviar {
     background-color: var(--verde-claro);
@@ -110,3 +125,12 @@
     font-weight: bold;
 }
 
+@media (max-width: 576px) {
+
+    .btn-enviar, .btn-sair {
+        border-left: 1px solid black;
+    }
+    .titulo {
+        text-align: center;
+    }
+}

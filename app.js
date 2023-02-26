@@ -66,83 +66,20 @@ const server = http.createServer(app)
 import {Server} from 'socket.io'
 const io = new Server(server)
 
-// Compartilhando a sessão válida do Express no Socket.io
-/*
-io.use( (socket, next) => {
-    var data = socket.request
-    cookie(data, {}, (err) => {
-        var sessionID = data.signedCookies[process.env.KEY]
-        store.get(sessionID, (err, session) => {
-            if (err || !session) {
-                return next(new Error('Acesso negado!'))
-            } else {
-                socket.handshake.session = session
-                return next()
-            }
-        })
-
-    })
-})
-*/
-
-// Iniciando uma conexão com o Socket.io
-/*
-io.sockets.on('connection', (client) => {
-    // Recuperando uma sessão do Express
-    var session = client.handshake.session
-    client.on('toServer', (msg) => {
-        // msg = `session.nome: ${session.nome}`
-        msg = "TESTE"
-        client.emit('toClient', msg)
-        client.broadcast.emit('toClient', msg)
-    })
-})
-*/
-
-/*
 io.on('connection', (socket) => {
-
-    console.log(`Usuário conectado: ${socket.id}`)
-
-    // Recebimento de novo usuario e distribuição para os sockets
-    socket.on('novo-usuario', (novoUsuario) => {
-        io.emit('usuario-entrou', novoUsuario)
-        io.emit('atualiza-usuarios', listaUsuarios)
+    // usuario-entrada -->> usuario-entrou
+    socket.on('usuario-entrada', (usuario) => {
+        io.emit('usuario-entrou', usuario)
     })
-
-    // Recebimento de nova mensagem e distribuição para os sockets
+    // usuario-saida -->> usuario-saiu
+    socket.on('usuario-saida', (usuario) => {
+        io.emit('usuario-saiu', usuario)
+    })
+    // nova-mensagem -->> incluir-mensagem
     socket.on('nova-mensagem', (usuario, novaMensagem) => {
         io.emit('incluir-mensagem', usuario, novaMensagem)
     })
-
-    socket.on('disconnect', () => {
-        console.log(`Usuário desconectado: ${socket.id}`)
-    })
-
 })
-*/
-
-/*
-            var connectionsLimit = 1
-
-            io.on('connection', function (socket) {
-
-            if (io.engine.clientsCount > connectionsLimit) {
-                socket.emit('err', { message: 'reach the limit of connections' })
-                socket.disconnect()
-                console.log('Disconnected...')
-                return
-            }
-
-            })
-*/
-
-/*
-            io.on('connection', (socket) => {
-                console.log("Nesse momento temos " + 
-                socket.server.engine.clientsCount + " conexões ativas.");
-            });
-*/
 
 // Middlewares
 import middleware from './src/middlewares/middleware.js'
@@ -153,8 +90,7 @@ import routes from './src/routes/routes.js'
 app.use(routes)
 
 // Inicializações
-global.listaUsuarios = []
-global.capacidadeSala = 5
+global.capacidadeSala = 2
 
 // Servidor
 const PORT = process.env.PORT || 8081
