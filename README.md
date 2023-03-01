@@ -10,9 +10,9 @@
   3. A sala é informada sobre a entrada e saída de um usuário. <br>
   4. A sessão do usuário é salva em banco de dados e dura no máximo 10 minutos. <br>
   5. O usuário pode encerrar sua sessão saindo da sala a qualquer momento. <br>
-  6. Caso o tempo de sessão de um usuário tenha expirado e ocorra a tentativa de envio de mensagens pela janela ainda aberta, o conteúdo não será encaminhada passado para a sala. O evento de emissão de mensagens está vinculado à sessão de cada usuário.
+  6. Caso o tempo de sessão de um usuário tenha expirado e ocorra a tentativa de envio de mensagens pela janela ainda aberta, o conteúdo não será encaminhado para a sala. O evento de emissão de mensagens está vinculado à sessão de cada usuário.
   7. Todas as mensagens recebidas na sala são marcadas com o nome de usuário do remetente.
-  8. O remetente de uma mensagem não visualiza em sua janela o seu nome de usuário marcado
+  8. O remetente de uma mensagem não visualiza em sua janela o seu nome de usuário marcado nas mensagens.
       
 ## Tecnologias utilizadas
 - HTML5 + CSS3 + JAVASCRIPT
@@ -25,7 +25,7 @@
   https://bate-papo.onrender.com/
 - **Para instalar e executar o projeto** <br>
   1. Fazer clone deste repositório. <br>
-     `https://github.com/simeaomessias/controle-arquivos-mongodb-gridfs`
+     https://github.com/simeaomessias/chatbasico
   2. Certificar que o npm está instalado. <br>
      O npm pode ser obtido instalando o [Node](https://nodejs.org/en/).
   3. Configurar os valores da seguintes variaveis de ambiente:<br>
@@ -36,14 +36,14 @@
      Acesse http://localhost:8081 para visualizar no navegador. <br>
 
 ## Imagens
-![01 - Tela de login](https://user-images.githubusercontent.com/76917508/222044209-a5abec0c-683c-40f6-921b-900172b652e4.jpg)
-![03 - Admin - Cadastro de usuários](https://user-images.githubusercontent.com/76917508/222044358-17a96710-3b84-4262-8d0f-95df0c85f15c.jpg)
-![06 - Admin - Cadastro de documentos](https://user-images.githubusercontent.com/76917508/222044388-83903427-9af7-4e06-8715-d4af849168c4.jpg)
-![07 - Admin - Documentos cadastrados](https://user-images.githubusercontent.com/76917508/222044469-88eee914-86c0-4b49-8b6b-ac32725fe462.jpg)
-![08 - Usuário - Documentos para download](https://user-images.githubusercontent.com/76917508/222044484-2d23d1e0-4857-4870-ae4a-6960ef89a15f.jpg)
-![09 - Admin - List de usuários por documento](https://user-images.githubusercontent.com/76917508/222044552-626e33cc-2bd2-4b84-b7b9-58b19181c755.jpg)
-![09 - Admin - Lista de documentos por usuário](https://user-images.githubusercontent.com/76917508/222044568-67c07281-68e2-43c5-a401-659cb4b14680.jpg)
-
+### Tela de entrada<br>
+![00](https://user-images.githubusercontent.com/76917508/222257704-306a5e30-1cc7-41bb-bfd7-a7daa51de74d.jpg) <br>
+### Tela do primeiro usuário a entrar na sala<br>
+![01](https://user-images.githubusercontent.com/76917508/222256820-72f56e83-8e9c-48f9-9eaa-f7bfb7e3c19c.jpg)<br>
+### Tela do segundo usuário a entrar na sala<br>
+![02](https://user-images.githubusercontent.com/76917508/222256884-9c7be35c-0901-43ae-8383-bfd70393e903.jpg)<br>
+### Tela do terceiro usuário a entrar na sala<br>
+![04](https://user-images.githubusercontent.com/76917508/222257227-2158e5be-1045-4820-8d94-a79579536125.png)<br>
 
 ## Autor
 https://github.com/simeaomessias
