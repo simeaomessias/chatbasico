@@ -54,6 +54,7 @@ const verificarSala = async (req, res) => {
     // Verificações concluídas
     req.session.usuario = req.body.usuario.toLowerCase()
     req.session.primeiroAcesso = req.body.primeiroAcesso = "1" // 1 - Sim 0 - Não
+    req.session.sid = req.sessionID // É o próprio _id do mongodb
     req.session.save( () => {
         res.redirect('/chat')
     })

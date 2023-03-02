@@ -1,6 +1,7 @@
 <div class="container">
 
     <input type="hidden" name="usuario" id="input-usuario" value="{{usuario}}">
+    <input type="hidden" name="sid" id="input-sid" value="{{sid}}">
     <input type="hidden" name="primeiroAcesso" id="input-primeiroAcesso" value="{{primeiroAcesso}}">
 
     {{!-- Título + Botão --}}
@@ -42,10 +43,9 @@
 <script>
 
     var usuario = document.getElementById('input-usuario').value.trim()
+    var sid = document.getElementById('input-sid').value.trim()
     var primeiroAcesso = document.getElementById('input-primeiroAcesso').value.trim()
-    console.log(primeiroAcesso)
-    console.log(typeof primeiroAcesso)
-
+    
     var btnSair = document.getElementById('btn-sair')
     var usuarios = document.getElementById('div-usuarios')
     var mensagens = document.getElementById('div-mensagens')
@@ -79,22 +79,24 @@
         e.preventDefault();
         var novaMensagem = document.getElementById('input-novaMensagem')
         if (novaMensagem.value) {
-            socket.emit('nova-mensagem', usuario, novaMensagem.value)
+            socket.emit('nova-mensagem', usuario, sid, novaMensagem.value)
         }
         novaMensagem.value = ""
         novaMensagem.focus()
     })
     // Incluir mensagem
-    socket.on('incluir-mensagem', (remetente, conteudo) => {
+    socket.on('incluir-mensagem', (remetente, id, conteudo, SIDsAtivos) => {
         var novoItem = document.createElement('div')
-        if (remetente === usuario) {    
-            novoItem.classList.add('div-mensagem-enviada')
-            novoItem.innerHTML = `${conteudo.trim()}`
-        } else {
-            novoItem.innerHTML = `<b>${remetente}:</b> ${conteudo}`
+        if (SIDsAtivos.includes(sid)) {
+            if (id === sid) {
+                novoItem.classList.add('div-mensagem-enviada')
+                novoItem.innerHTML = `${conteudo.trim()}`
+            } else {
+                novoItem.innerHTML = `<b>${remetente}:</b> ${conteudo}`
+            }
+            mensagens.appendChild(novoItem)
+            mensagens.scrollTop = mensagens.scrollHeight
         }
-        mensagens.appendChild(novoItem)
-        mensagens.scrollTop = mensagens.scrollHeight
     })
 </script>
 

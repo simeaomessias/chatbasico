@@ -29,7 +29,7 @@ const cookie = cookieParser(process.env.SECRET)
 app.use(cookie)
 
 // Mongoose
-import mongoose from 'mongoose'
+import mongoose, { isObjectIdOrHexString } from 'mongoose'
 mongoose.set('strictQuery', false);
 const mongoUri = process.env.MONGOURI
 mongoose.Promise = global.Promise
@@ -38,6 +38,15 @@ mongoose.connect(mongoUri).then( () => {
     app.emit("connectedDatabase")
 }).catch( (erro) => {
     console.log(`BANCO DE DADOS: A conexão com o MongoDB não foi realizada! ERRO: ${erro}`)
+})
+
+// Importação - Sessões de usuários
+import SessionSchema from './src/models/Session.js'
+const Session = mongoose.model('sessions', SessionSchema, 'sessions');
+
+// Connect-mongo
+var store = MongoStore.create({
+    mongoUrl: mongoUri
 })
 
 // Express-session
@@ -49,11 +58,9 @@ app.use(session({
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
-    store: MongoStore.create({
-        mongoUrl: mongoUri
-    }),
+    store: store,
     cookie: {
-        maxAge: 1000*60*2, // 2 minutos (tempo máximo de inatividade no chat)
+        maxAge: 10*(60*1000), // 10 minutos (tempo máximo dentro do chat)
         httpOnly: true
     }
 }))
@@ -65,8 +72,9 @@ const server = http.createServer(app)
 // Socket.io
 import {Server} from 'socket.io'
 const io = new Server(server)
-
+// Eventos
 io.on('connection', (socket) => {
+
     // usuario-entrada -->> usuario-entrou
     socket.on('usuario-entrada', (usuario) => {
         io.emit('usuario-entrou', usuario)
@@ -76,8 +84,23 @@ io.on('connection', (socket) => {
         io.emit('usuario-saiu', usuario)
     })
     // nova-mensagem -->> incluir-mensagem
-    socket.on('nova-mensagem', (usuario, novaMensagem) => {
-        io.emit('incluir-mensagem', usuario, novaMensagem)
+    socket.on('nova-mensagem', async (usuario, sid, novaMensagem) => {
+        // Lista de todas as sessões ativas
+        let listaSessoes = await Session.find().lean()
+        let listaSIDs = []
+        listaSessoes.forEach( (sessao) => {
+            let sessaoJSON = JSON.parse(sessao.session)
+            if (sessaoJSON.usuario) {
+                listaSIDs.push(sessaoJSON.sid)
+            }
+        })
+        // Verificação se a sessão remetente está ativa
+        if (listaSIDs.includes(sid)) {
+            // Envia a mensagem pora os outros usuários
+            io.emit('incluir-mensagem', usuario, sid, novaMensagem, listaSIDs)
+        } else {
+            console.log("Servidor - Entrei no if - Não vou mandar a mensagem digitada!")
+        }
     })
 })
 

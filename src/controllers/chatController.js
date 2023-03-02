@@ -16,6 +16,7 @@ const index = (req, res) => {
             return res.render('chat', {
                 layout: 'mainChat',
                 usuario: req.session.usuario,
+                sid: req.session.sid,
                 primeiroAcesso: temp                
             })
         })
@@ -27,17 +28,21 @@ const index = (req, res) => {
         return res.render('chat', {
             layout: 'mainChat',
             usuario: req.session.usuario,
+            sid: req.session.sid,
             primeiroAcesso: req.session.primeiroAcesso
         })
     })
 }
 
 const sairSala = (req, res) => {
+
     delete req.session.usuario
     req.session.save( () => {
         req.session.destroy();
         return res.redirect('/')
-    }) 
+    })
+    return
+
 }
 
 export default {
