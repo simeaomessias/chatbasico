@@ -45,6 +45,14 @@
     background-color: var(--azul-claro);
 }
 
+.area-links {
+    background-color: var(--cinza-claro);
+}
+
+.nome-usuario {
+    background-color: var(--khaki);
+}
+
 .input-usuario {
     outline: none;
     width: 100%;
